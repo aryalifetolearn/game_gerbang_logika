@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Circuit: Logic Hack | Exhibition Edition</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts for Cyberpunk Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="scanline"></div>
+    <div id="vignette"></div>
+
+    <div id="app-container">
+        <!-- HEADER / NAVIGATION -->
+        <header id="game-header">
+            <div class="logo-group">
+                <span class="badge">HIMASANTIKA</span>
+                <h1 class="glitch-text" data-text="CYBER CIRCUIT">CYBER CIRCUIT</h1>
+                <span class="sub-title">// LOGIC HACK EXHI-V1</span>
+            </div>
+            
+            <div class="header-controls">
+                <button id="btn-sound" class="cyber-btn sm" title="Toggle Sound">
+                    <span class="icon">🔊</span> SFX: <span id="sound-status">ON</span>
+                </button>
+                <button id="btn-fullscreen" class="cyber-btn sm" title="Fullscreen Kiosk">
+                    <span class="icon">⛶</span> FULLSCREEN
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN GAME VIEW -->
+        <main id="game-viewport">
+            <!-- HUD OVERLAY -->
+            <div id="hud">
+                <div class="hud-box">
+                    <span class="hud-label">HACKER</span>
+                    <span id="hud-player-name" class="hud-value cyan">GUEST</span>
+                </div>
+                <div class="hud-box">
+                    <span class="hud-label">MODE</span>
+                    <span id="hud-mode" class="hud-value cyan">STORY</span>
+                </div>
+                <div class="hud-box">
+                    <span class="hud-label">LEVEL / STAGE</span>
+                    <span id="hud-level" class="hud-value yellow">01 / 10</span>
+                </div>
+                <div class="hud-box">
+                    <span class="hud-label">SISA WAKTU</span>
+                    <span id="hud-timer" class="hud-value magenta">02:00</span>
+                </div>
+                <div class="hud-box">
+                    <span class="hud-label">TOTAL WAKTU</span>
+                    <span id="hud-total-time" class="hud-value yellow">00:00</span>
+                </div>
+                <div class="hud-box">
+                    <span class="hud-label">SKOR TOTAL</span>
+                    <span id="hud-score" class="hud-value green">00000</span>
+                </div>
+                <div class="hud-box">
+                    <span class="hud-label">ROTASI</span>
+                    <span id="hud-moves" class="hud-value white">0</span>
+                </div>
+            </div>
+
+            <!-- CANVAS CONTAINER -->
+            <div id="canvas-wrapper">
+                <canvas id="game-canvas" width="900" height="600"></canvas>
+                
+                <!-- ATTRACT / IDLE OVERLAY -->
+                <div id="attract-overlay" class="hidden">
+                    <div class="attract-banner">
+                        <h2>SISTEM HAK CIPTA LOGIKA</h2>
+                        <p class="pulse-text">TEKAN ATAU KLIK UNTUK MEMULAI MERETAS!</p>
+                        <div class="demo-badge">PAMERAN MAHASISWA - DEMO MODE</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER TOOLBAR -->
+            <div id="game-toolbar">
+                <button id="btn-reset-level" class="cyber-btn warning">
+                    <span class="icon">🔄</span> RESET SIRKUIT
+                </button>
+                <button id="btn-hint" class="cyber-btn info">
+                    <span class="icon">💡</span> PETUNJUK LOGIKA
+                </button>
+                <button id="btn-main-menu" class="cyber-btn danger">
+                    <span class="icon">🏠</span> MENU UTAMA
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL MENU UTAMA -->
+    <div id="modal-menu" class="modal-overlay active">
+        <div class="modal-card cyber-border">
+            <div class="modal-header">
+                <h2 class="glitch-text" data-text="CYBER CIRCUIT">CYBER CIRCUIT</h2>
+                <p>Pengasah Otak Logika & Routing Sinyal Cyberpunk</p>
+            </div>
+            
+            <div class="menu-options">
+                <button id="btn-start-story" class="cyber-btn primary lg">
+                    <span class="icon">⚡</span> 1. MODE STAGE (LEVEL 1-10)
+                    <small>Cocok untuk belajar & menyelesaikan puzzle bertahap</small>
+                </button>
+                <button id="btn-start-rush" class="cyber-btn accent lg">
+                    <span class="icon">🔥</span> 2. TIME ATTACK (HACK RUSH)
+                    <small>Selesaikan level sebanyak mungkin dalam 120 detik!</small>
+                </button>
+                <button id="btn-show-leaderboard" class="cyber-btn secondary lg">
+                    <span class="icon">🏆</span> 3. PAPAN SKOR BOOTH
+                    <small>Lihat Top Hacker hari ini di Pameran</small>
+                </button>
+                <button id="btn-how-to-play" class="cyber-btn outline lg">
+                    <span class="icon">📖</span> 4. CARA BERMAIN & GERBANG LOGIKA
+                </button>
+            </div>
+
+            <div class="modal-footer">
+                <span>Dibuat untuk Pameran Karya Mahasiswa</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CARA BERMAIN -->
+    <div id="modal-howto" class="modal-overlay hidden">
+        <div class="modal-card cyber-border wide">
+            <h2>📖 PANDUAN MERETAS LOGIKA</h2>
+            
+            <div class="howto-content">
+                <div class="howto-section">
+                    <h3>🎯 TUJUAN GAME</h3>
+                    <p>Hubungkan sinyal energi dari **POWER SOURCE (⚡)** ke **CORE SERVER (💾)** hingga semua Core aktif menyala terang!</p>
+                </div>
+
+                <div class="howto-section">
+                    <h3>🧩 CARA KONTROL</h3>
+                    <p>Klik atau Tap pada ubin sirkuit untuk **memutar searah jarum jam (90°)**.</p>
+                </div>
+
+                <div class="howto-section">
+                    <h3>🔮 GERBANG LOGIKA (LOGIC GATES)</h3>
+                    <div class="gate-grid">
+                        <div class="gate-card">
+                            <span class="gate-tag not">NOT</span>
+                            <p>Membalikkan sinyal. (Ada Sinyal ➔ Matikan | Tidak Ada Sinyal ➔ Sinyal Aktif)</p>
+                        </div>
+                        <div class="gate-card">
+                            <span class="gate-tag and">AND</span>
+                            <p>Butuh **SEMUA** jalur masukan aktif agar sinyal dapat keluar.</p>
+                        </div>
+                        <div class="gate-card">
+                            <span class="gate-tag or">OR</span>
+                            <p>Butuh **MINIMAL 1** jalur masukan aktif agar sinyal keluar.</p>
+                        </div>
+                        <div class="gate-card">
+                            <span class="gate-tag xor">XOR</span>
+                            <p>Butuh **TEPAT 1** masukan aktif (jika 0 atau 2 masukan aktif ➔ sinyal mati).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-close-howto" class="cyber-btn primary">SAYA MENGERTI - KEMBALI</button>
+        </div>
+    </div>
+
+    <!-- MODAL VICTORY / STAGE CLEAR -->
+    <div id="modal-victory" class="modal-overlay hidden">
+        <div class="modal-card cyber-border glow-green">
+            <h2 class="green-glow">⚡ LEVEL TERRETAS! ⚡</h2>
+            <div class="victory-stats">
+                <p>Waktu Penyelesaian: <strong id="vic-time">00:45</strong></p>
+                <p>Total Rotasi: <strong id="vic-moves">12</strong></p>
+                <p>Skor Diperoleh: <strong id="vic-score" class="yellow">+1500</strong></p>
+            </div>
+            <div class="modal-actions">
+                <button id="btn-next-level" class="cyber-btn primary lg">LEVEL SELANJUTNYA ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL GAME OVER / TIME UP -->
+    <div id="modal-gameover" class="modal-overlay hidden">
+        <div class="modal-card cyber-border glow-red">
+            <h2 class="red-glow">🚨 RETASAN GAGAL! 🚨</h2>
+            <p id="gameover-reason">Waktu meretas telah habis!</p>
+            <div class="victory-stats">
+                <p>Skor Akhir: <strong id="go-score" class="yellow">00000</strong></p>
+            </div>
+            
+            <div class="name-entry-box">
+                <label for="player-name">MASUKKAN NAMA / NIM UNTUK LEADERBOARD:</label>
+                <input type="text" id="player-name" placeholder="HACKER_01" maxlength="15" autocomplete="off">
+                <button id="btn-save-score" class="cyber-btn accent">SIMPAN SKOR BOOTH</button>
+            </div>
+
+            <div class="modal-actions">
+                <button id="btn-retry" class="cyber-btn warning lg">COBA LAGI 🔄</button>
+                <button id="btn-go-menu" class="cyber-btn danger lg">MENU UTAMA 🏠</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LEADERBOARD -->
+    <div id="modal-leaderboard" class="modal-overlay hidden">
+        <div class="modal-card cyber-border wide">
+            <h2>🏆 LEADERBOARD BOOTH PAMERAN</h2>
+            <div class="leaderboard-table-container">
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>RANK</th>
+                            <th>NAMA / NIM</th>
+                            <th>MODE</th>
+                            <th>LEVEL</th>
+                            <th>TOTAL WAKTU</th>
+                            <th>SKOR AKUMULASI</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Filled dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-actions space-between">
+                <button id="btn-clear-leaderboard" class="cyber-btn danger sm">RESET SKOR (ADMIN)</button>
+                <button id="btn-close-leaderboard" class="cyber-btn primary">TUTUP</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTRASI NICKNAME (SEBELUM MAIN) -->
+    <div id="modal-nickname" class="modal-overlay hidden">
+        <div class="modal-card cyber-border glow-cyan">
+            <div class="modal-header">
+                <h2 class="glitch-text" data-text="REGISTRASI HACKER">REGISTRASI HACKER</h2>
+                <p>Masukkan Nama / NIM kamu sebelum memulai meretas sirkuit!</p>
+            </div>
+            
+            <div class="name-entry-box">
+                <label for="input-hacker-name">NICKNAME / NIM HACKER:</label>
+                <input type="text" id="input-hacker-name" placeholder="HACKER_01" maxlength="15" autocomplete="off">
+            </div>
+
+            <div class="modal-actions space-between" style="margin-top: 15px;">
+                <button id="btn-cancel-nickname" class="cyber-btn danger">BATAL</button>
+                <button id="btn-confirm-start" class="cyber-btn primary">
+                    <span class="icon">🚀</span> MULAI MERETAS!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="js/app.js"></script>
+</body>
+</html>
